@@ -9,20 +9,18 @@
 <table class="User">
     <thead>
     <tr>
-<!--        <th scope="col">ID</th>-->
         <th scope="col">Имя</th>
-<!--        <th scope="col">Пароль</th>-->
         <th scope="col">Email</th>
         <th scope="col">Права доступа</th>
     </tr>
     </thead>
     <tbody>
     <tr>
-<!--        <td th:text="${user.getId()}"/>-->
+
         <td th:text="${user.getUsername()}"/>
-<!--        <td th:text="${user.getPassword()}"/>-->
         <td th:text="${user.getEmail()}"/>
-        <td th:each="role : ${user.getRoles()}" th:text="${role.getRole()}"></td>
+        <td th:text="${user.getRoles()}"/>
+<!--        <td th:each="role : ${user.getRoles()}" th:text="${role.getRole()}"></td>-->
     </tr>
 
     </tbody>
