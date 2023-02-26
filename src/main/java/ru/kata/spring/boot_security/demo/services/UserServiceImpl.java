@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
-
     private final UserDao userDao;
     @Autowired
     public UserServiceImpl( UserDao userDao) {
@@ -46,6 +45,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void addUser(User user) {
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userDao.addUser(user);
     }
 
@@ -58,6 +58,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updUser(User user, Long id) {
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userDao.updUser(user, id);
     }
 
