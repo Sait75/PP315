@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.entities.User;
 import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
+
+import java.security.Principal;
 import java.util.List;
 
 
@@ -25,17 +27,18 @@ public class AdminController {
     }
 
     @GetMapping()
-    public String showAllUser(Model model) {
-        List<User> allUsers = userService.getAllUsers();
-        model.addAttribute("allUsers", allUsers);
-        return "all-users";
+    public String showAllUser(Model model, Principal principal) {
+        model.addAttribute("allUsers", userService.getAllUsers());
+        model.addAttribute("admin", principal.getName());
+        model.addAttribute("roles", roleService.getAllRoles());
+        model.addAttribute("user", new User());
+        return "admin";
     }
+
     @GetMapping("/addUser")
     public String addNewUser(Model model) {
-
         model.addAttribute("user", new User());
         model.addAttribute("roles", roleService.getAllRoles());
-
         return "userAdd";
     }
     @PostMapping()
@@ -54,14 +57,7 @@ public class AdminController {
     public String editUser(Model model, @PathVariable("id") Long id) {
         model.addAttribute("user", userService.getUserById(id));
         model.addAttribute("roles", roleService.getAllRoles());
-        return "userEdit";
-    }
-
-
-    @PatchMapping("/edit/{id}")
-    public String changeUser(@PathVariable Long id, @ModelAttribute("user") User user) {
-        userService.updUser(user, id);
-        return "redirect:/admin";
+        return "userAdd";
     }
 
 }
