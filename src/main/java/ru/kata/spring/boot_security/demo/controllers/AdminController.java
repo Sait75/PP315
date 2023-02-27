@@ -28,16 +28,16 @@ public class AdminController {
     public String showAllUser(Model model) {
         List<User> allUsers = userService.getAllUsers();
         model.addAttribute("allUsers", allUsers);
-        return "all-users";
+        return "admin";
     }
+
     @GetMapping("/addUser")
     public String addNewUser(Model model) {
-
         model.addAttribute("user", new User());
         model.addAttribute("roles", roleService.getAllRoles());
-
         return "userAdd";
     }
+//------Для добавления и изменения юзера-----------
     @PostMapping()
     public String addUser(@ModelAttribute("user") User user) {
         userService.addUser(user);
@@ -54,14 +54,7 @@ public class AdminController {
     public String editUser(Model model, @PathVariable("id") Long id) {
         model.addAttribute("user", userService.getUserById(id));
         model.addAttribute("roles", roleService.getAllRoles());
-        return "userEdit";
-    }
-
-
-    @PatchMapping("/edit/{id}")
-    public String changeUser(@PathVariable Long id, @ModelAttribute("user") User user) {
-        userService.updUser(user, id);
-        return "redirect:/admin";
+        return "userAdd";
     }
 
 }

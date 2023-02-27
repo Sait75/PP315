@@ -7,7 +7,6 @@
 </head>
 <body>
 
-
 <form th:method="post" th:action="@{/admin}" th:object="${user}">
 
     <input type="hidden" th:field="*{id}" readonly="readonly">
@@ -31,16 +30,13 @@
                    th:text="${role.role}"
                    th:value="${role.id}"
                    th:field="*{roles}"/>
-
         </label>
     </p>
 
-    <input type="submit" value="Add User">
+    <input type="submit" value="Submit">
     <br>
-
+    <br>
     <a href="/logout">Logout</a>
 </form>
-
-
 </body>
 </html>
