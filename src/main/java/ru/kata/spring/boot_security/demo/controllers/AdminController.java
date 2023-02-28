@@ -29,7 +29,7 @@ public class AdminController {
     @GetMapping()
     public String showAllUser(Model model, Principal principal) {
         model.addAttribute("allUsers", userService.getAllUsers());
-        model.addAttribute("admin", principal.getName());
+        model.addAttribute("admin", userService.findByUsername(principal.getName()));
         model.addAttribute("roles", roleService.getAllRoles());
         model.addAttribute("user", new User());
         return "admin";
@@ -43,6 +43,7 @@ public class AdminController {
     }
     @PostMapping()
     public String addUser(@ModelAttribute("user") User user) {
+        System.out.println(user);
         userService.addUser(user);
         return "redirect:/admin";
     }
