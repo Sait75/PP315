@@ -11,7 +11,7 @@
 <body>
 
 <nav class="navbar navbar-dark sticky-top bg-dark navbar-expand-lg">
-    <a class="navbar-brand" href="#"> <span th:text="${admin.email}"></span> with roles <span
+    <a class="navbar-brand" href="#"> <span th:text="${admin.username}"></span> with roles <span
             th:text="${admin.getRoles()}"></span></a>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
@@ -60,8 +60,8 @@
                                 <tbody>
                                 <tr th:each="user : ${allUsers}">
                                     <td th:text="${user.getId()}"></td>
+                                    <td th:text="${user.getName()}"></td>
                                     <td th:text="${user.getUsername()}"></td>
-                                    <td th:text="${user.getEmail()}"></td>
                                     <td th:text="${user.getRoles()}"></td>
                                     <td>
                                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#edit"
@@ -85,11 +85,11 @@
                                                             </div>
                                                             <div class="form-group text-center">
                                                                 <label class="font-weight-bold" for="nameEdit">Name</label>
-                                                                <input id="nameEdit" class="form-control" th:name="username" th:value="${user.username}" placeholder="Name">
+                                                                <input id="nameEdit" class="form-control" th:name="name" th:value="${user.name}" placeholder="Name">
                                                             </div>
                                                             <div class="form-group text-center">
                                                                 <label class="font-weight-bold" for="emailEdit">Email</label>
-                                                                <input id="emailEdit" class="form-control" th:name="email" th:value="${user.email}" placeholder="Email">
+                                                                <input id="emailEdit" class="form-control" th:name="username" th:value="${user.username}" placeholder="Email">
                                                             </div>
                                                             <div class="form-group text-center">
                                                                 <label class="font-weight-bold" for="passwordEdit">Password</label>
@@ -150,13 +150,13 @@
                                                             <div class="form-group text-center">
                                                                 <label class="font-weight-bold" for="name">Name</label>
                                                                 <input id="name" class="form-control"
-                                                                       th:value="${user.username}" disabled>
+                                                                       th:value="${user.name}" disabled>
                                                             </div>
                                                             <div class="form-group text-center">
                                                                 <label class="font-weight-bold"
                                                                        for="email">Email</label>
                                                                 <input id="email" class="form-control"
-                                                                       th:value="${user.email}" disabled>
+                                                                       th:value="${user.username}" disabled>
                                                             </div>
                                                             <div class="form-group text-center">
                                                                 <label class="font-weight-bold"
@@ -207,13 +207,13 @@
                                         <div class="form-group text-center">
                                             <label for="username" style="font-weight: bold;">Username:</label>
                                             <input type="text" class="form-control" id="username"
-                                                   th:field="*{user.username}"
+                                                   th:field="*{user.name}"
                                                    name="username" placeholder="Name"
                                                    required>
                                         </div>
                                         <div class="form-group text-center">
                                             <label for="email" style="font-weight: bold;">Email:</label>
-                                            <input type="email" class="form-control" id="email" th:field="*{user.email}"
+                                            <input type="email" class="form-control" id="email" th:field="*{user.username}"
                                                    name="email" placeholder="Email"
                                                    required>
                                         </div>
@@ -263,8 +263,8 @@
                             <tbody>
                             <tr>
                                 <td th:text="${admin.getId()}"></td>
+                                <td th:text="${admin.getName()}"></td>
                                 <td th:text="${admin.getUsername()}"></td>
-                                <td th:text="${admin.getEmail()}"></td>
                                 <td th:text="${admin.getRoles()}"></td>
                             </tr>
                             </tbody>

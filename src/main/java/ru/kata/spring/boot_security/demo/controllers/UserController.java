@@ -25,15 +25,9 @@ public class UserController {
     @GetMapping()
     public String userPage(Principal principal, Model model) {
         User user = userService.findByUsername(principal.getName());
+//        User user = userService.findByEmail(principal.getName());
+        System.out.println(user);
         model.addAttribute("user", user);
         return "user";
-    }
-
-    @PostMapping("/login")
-    public String login(@RequestParam("email") String email,
-                        @RequestParam("password") String password,
-                        Model model) {
-        // Code to authenticate the user and handle the login process
-        return "redirect:/";
     }
 }

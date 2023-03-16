@@ -9,7 +9,7 @@
 <body>
 
 <nav class="navbar navbar-dark sticky-top bg-dark navbar-expand-lg">
-    <a class="navbar-brand" href="#"> <span th:text="${user.getEmail()}"></span> with roles <span th:text="${user.getRoles()}"></span></a>
+    <a class="navbar-brand" href="#"> <span th:text="${user.getUsername()}"></span> with roles <span th:text="${user.getRoles()}"></span></a>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
@@ -41,8 +41,8 @@
                 <tbody>
                 <tr>
                     <td th:text="${user.getId()}"></td>
+                    <td th:text="${user.getName()}"></td>
                     <td th:text="${user.getUsername()}"></td>
-                    <td th:text="${user.getEmail()}"></td>
                     <td th:text="${user.getRoles()}"></td>
                 </tr>
                 </tbody>

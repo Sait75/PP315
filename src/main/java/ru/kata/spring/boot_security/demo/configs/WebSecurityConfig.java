@@ -28,24 +28,56 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.authorizeRequests()
+        http
+                .csrf().disable()
+                .authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN")//вход только для ADMIN
                 .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")//вход для USER & ADMIN
-                .antMatchers("/").permitAll()
+                .antMatchers("/", "/login").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .formLogin().successHandler(successUserHandler)
+                .formLogin()
+                .successHandler(successUserHandler)
+                .loginPage("/login")
+                .loginProcessingUrl("/process_login")
+//                .loginProcessingUrl("/login")
+//                .usernameParameter("username")
+//                .passwordParameter("password")
+                .permitAll()
                 .and()
                 .logout().logoutSuccessUrl("/login");
+//        http
+//                .csrf().disable()
+//                .authorizeRequests()
+//                .antMatchers("/admin/**").hasRole("ADMIN")
+//                .antMatchers("/user/**").hasAnyRole( "ADMIN","USER")
+//                .antMatchers("/login").permitAll()
+//                .anyRequest().authenticated()
+//                .and()
+//                .formLogin()
+//                .loginPage("/login")
+//                .loginProcessingUrl("/process_login")
+////                .usernameParameter("username")
+////                .passwordParameter("password")
+//                .successHandler(successUserHandler)
+//                .permitAll()
+//                .and()
+//                .logout()
+//                .logoutSuccessUrl("/login")
+//                .permitAll();
+
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userServiceImpl)
-                .passwordEncoder(passwordEncoder());}
+                .passwordEncoder(passwordEncoder());
+    }
 //    @Bean
 //    public static PasswordEncoder passwordEncoder() {
 //        return PasswordEncoderFactories.createDelegatingPasswordEncoder();

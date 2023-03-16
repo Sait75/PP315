@@ -17,14 +17,14 @@ public class User implements UserDetails {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "username")
-    private String username;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "password")
     private String password;
 
     @Column(name = "email")
-    private String email;
+    private String username;
 
     @ManyToMany()
     @JoinTable(name = "users_roles",
@@ -35,10 +35,10 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String username, String password, String email, Collection<Role> roles) {
+    public User(String name, String password, String username, Collection<Role> roles) {
         this.username = username;
         this.password = password;
-        this.email = email;
+        this.name = name;
         this.roles = roles;
     }
 
@@ -68,12 +68,20 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
+//    public String getEmail() {
+//        return email;
+//    }
+//
+//    public void setEmail(String email) {
+//        this.email = email;
+//    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public String getName() {
+        return name;
     }
 
     public Collection<Role> getRoles() {
@@ -114,9 +122,9 @@ public class User implements UserDetails {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", username='" + username + '\'' +
+                ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
+                ", email='" + username + '\'' +
                 ", roles=" + roles +
                 '}';
     }
@@ -126,11 +134,11 @@ public class User implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(email, user.email);
+        return Objects.equals(name, user.name) && Objects.equals(password, user.password) && Objects.equals(username, user.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, password, email);
+        return Objects.hash(name, password, username);
     }
 }
