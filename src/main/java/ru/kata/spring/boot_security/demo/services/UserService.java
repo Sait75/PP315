@@ -18,8 +18,6 @@ public interface UserService extends UserDetailsService {
 
     public User findByUsername(String username);
 
-//    public User findByEmail(String email);
-
     public UserDetails loadUserByUsername(String username);
 }
 

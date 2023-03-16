@@ -8,9 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.entities.User;
 import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
-
 import java.security.Principal;
-import java.util.List;
+
 
 
 @Controller
@@ -32,16 +31,15 @@ public class AdminController {
         model.addAttribute("admin", userService.findByUsername(principal.getName()));
         model.addAttribute("roles", roleService.getAllRoles());
         model.addAttribute("user", new User());
-        System.out.println(userService.findByUsername(principal.getName()));
         return "admin";
     }
 
-    @GetMapping("/addUser")
-    public String addNewUser(Model model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("roles", roleService.getAllRoles());
-        return "userAdd";
-    }
+//    @GetMapping("/addUser")
+//    public String addNewUser(Model model) {
+//        model.addAttribute("user", new User());
+//        model.addAttribute("roles", roleService.getAllRoles());
+//        return "userAdd";
+//    }
     @PostMapping()
     public String addUser(@ModelAttribute("user") User user) {
         userService.addUser(user);
@@ -54,11 +52,11 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping("/edit/{id}")
-    public String editUser(Model model, @PathVariable("id") Long id) {
-        model.addAttribute("user", userService.getUserById(id));
-        model.addAttribute("roles", roleService.getAllRoles());
-        return "userAdd";
-    }
+//    @GetMapping("/edit/{id}")
+//    public String editUser(Model model, @PathVariable("id") Long id) {
+//        model.addAttribute("user", userService.getUserById(id));
+//        model.addAttribute("roles", roleService.getAllRoles());
+//        return "userAdd";
+//    }
 
 }
