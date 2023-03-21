@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.kata.spring.boot_security.demo.entities.User;
+import ru.kata.spring.boot_security.demo.services.UserDetailServiceImpl;
 import ru.kata.spring.boot_security.demo.services.UserService;
 
 import java.security.Principal;
@@ -15,15 +16,9 @@ import java.security.Principal;
 @RequestMapping("/user")
 public class UserController {
 
-    private UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
-    @GetMapping()
-    public String userPage(Principal principal, Model model) {
-        model.addAttribute("user", userService.findByUsername(principal.getName()));
+    @RequestMapping()
+    public String userPage() {
         return "user";
     }
 }
