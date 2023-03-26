@@ -1,4 +1,3 @@
-//Таблица всех пользователей
 let allUsers;
 let allRoles;
 
@@ -27,13 +26,11 @@ fetch('/api/admin').then(
 function createTable(data) {
     let temp = "";
     data.forEach(u => {
-        // console.log(u)
         temp += "<tr id=\"" + u.id + "\">";
         temp += "<td>" + u.id + "</td>";
         temp += "<td>" + u.name + "</td>";
         temp += "<td>" + u.username + "</td>";
         temp += "<td>" + u.roles.map(role => role.role.replaceAll("ROLE_", "")).join(', ') + "</td>";
-        // temp += "<td>" + u.roles.map(role => role.role).join(', ') + "</td>";
         temp += "<td><button class=\"btn btn-info\" onclick=\"fEdit(this)\" id=\"editBtn" + u.id + "\">Edit</button></td>";
         temp += "<td><button class=\"btn btn-danger\" onclick=\"fDel(this)\" id=\"deleteBtn" + u.id + "\">Delete</button></td>" + "</tr>";
     })
@@ -71,8 +68,6 @@ fetch('/api/roles').then(
         res.json().then(
             roles => {
                 let temp = "";
-                console.log(roles)
-                // document.getElementById("new-roles").size = roles.length;
                 roles.forEach(r => {
                     temp += "<option>" + r.role + "</option>";
                 })
@@ -92,7 +87,6 @@ $('#addUserBtn').click(function () {
     newUser.name = document.getElementById("new-name").value;
     newUser.username = document.getElementById("new-email").value;
     newUser.password = document.getElementById("new-password").value;
-    // newUser.roles = getRoles(Array.from(document.getElementById("new-roles").selectedOptions).map(role => role.value));
     newUser.roles = [];
     [].slice.call(document.getElementById("new-roles")).forEach(op => {
         if (op.selected) {
@@ -103,6 +97,7 @@ $('#addUserBtn').click(function () {
             })
         }
     })
+    console.log(newUser);
     fetch('/api/admin', {
         method: 'POST',
         body: JSON.stringify(newUser),
@@ -124,28 +119,7 @@ $('#addUserBtn').click(function () {
 
 })
 
-function getRoles(rols) {
-    let roles = [];
-    if (rols.indexOf("ADMIN") >= 0) {
-        roles.push({
-            "id": 1,
-            "name": "ROLE_ADMIN",
-            "users": null,
-            "authority": "ROLE_ADMIN"
-        });
-    }
-    if (rols.indexOf("USER") >= 0) {
-        roles.push({
-            "id": 2,
-            "name": "ROLE_USER",
-            "users": null,
-            "authority": "ROLE_USER"
-        });
-    }
-    return roles;
-}
-
-
+// -------------------Удаление юзера----------------------------
 function getUserById(id) {
     let t = null;
     allUsers.forEach(u => {
@@ -156,7 +130,6 @@ function getUserById(id) {
     return t;
 }
 
-// -------------------Удаление юзера----------------------------
 $('#delUserBtn').click(function () {
     let id = document.getElementById("idDelModal").value;
     $('#deleteModal').modal('hide');
@@ -194,7 +167,6 @@ function fDel(el) {
 
 // ---------Редактирование юзера----------------------
 $('#editUserBtn').click(function () {
-    let id = document.getElementById("idEditModal").value;
     let edit = {
         id: -1,
         name: "",
@@ -205,9 +177,8 @@ $('#editUserBtn').click(function () {
     $('#editModal').modal('hide');
     edit.id = document.getElementById("idEditModal").value;
     edit.name = document.getElementById("nameEditModal").value;
-    edit.username= document.getElementById("emailEditModal").value;
+    edit.username = document.getElementById("emailEditModal").value;
     edit.password = document.getElementById("passwordEditModal").value;
-    // edit.roles = getRoles(Array.from(document.getElementById("rolesEditModal").selectedOptions).map(role => role.value));
     edit.roles = [];
     [].slice.call(document.getElementById("rolesEditModal")).forEach(op => {
         if (op.selected) {
@@ -218,7 +189,6 @@ $('#editUserBtn').click(function () {
             })
         }
     })
-
 
     console.log(edit)
     fetch('/api/admin', {
@@ -241,7 +211,6 @@ $('#editUserBtn').click(function () {
                 createTable(allUsers);
             }
         });
-
 })
 
 function fEdit(el) {

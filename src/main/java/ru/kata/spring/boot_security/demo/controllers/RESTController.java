@@ -6,11 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.entities.Role;
 import ru.kata.spring.boot_security.demo.entities.User;
-import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.RoleServiceImpl;
 import ru.kata.spring.boot_security.demo.services.UserDetailServiceImpl;
 import ru.kata.spring.boot_security.demo.services.UserService;
-
 import java.security.Principal;
 import java.util.List;
 
@@ -41,7 +39,6 @@ public class RESTController {
 
     @GetMapping("/admin/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        System.out.println(userService.getUserById(id));
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
 
     }
@@ -67,6 +64,5 @@ public class RESTController {
     public void deleteUser(@PathVariable Long id) {
         userService.delUser(id);
     }
-
 
 }
