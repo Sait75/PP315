@@ -36,23 +36,25 @@ public class AdminController {
         return "admin";
     }
 
-    @PostMapping()
-    public String addUser(@ModelAttribute("user") User user) {
-        userService.addUser(user);
-        return "redirect:/admin";
-    }
 
-    @DeleteMapping("/deleteUser/{id}")
-    public String delUser(@PathVariable("id") Long id) {
-        userService.delUser(id);
-        return "redirect:/admin";
-    }
-
-    @GetMapping("/edit/{id}")
-    public String editUser(Model model, @PathVariable("id") Long id) {
-        model.addAttribute("user", userService.getUserById(id));
-        model.addAttribute("roles", roleService.getAllRoles());
-        return "redirect:/admin";
-    }
+//
+//    @PostMapping()
+//    public String addUser(@ModelAttribute("user") User user) {
+//        userService.addUser(user);
+//        return "redirect:/admin";
+//    }
+//
+//    @DeleteMapping("/deleteUser/{id}")
+//    public String delUser(@PathVariable("id") Long id) {
+//        userService.delUser(id);
+//        return "redirect:/admin";
+//    }
+//
+//    @GetMapping("/edit/{id}")
+//    public String editUser(Model model, @PathVariable("id") Long id) {
+//        model.addAttribute("user", userService.getUserById(id));
+//        model.addAttribute("roles", roleService.getAllRoles());
+//        return "redirect:/admin";
+//    }
 
 }

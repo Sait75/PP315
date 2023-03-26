@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.entities.Role;
 import ru.kata.spring.boot_security.demo.entities.User;
+import ru.kata.spring.boot_security.demo.services.RoleService;
+import ru.kata.spring.boot_security.demo.services.RoleServiceImpl;
 import ru.kata.spring.boot_security.demo.services.UserDetailServiceImpl;
 import ru.kata.spring.boot_security.demo.services.UserService;
 
@@ -17,46 +20,50 @@ public class RESTController {
 
     private final UserService userService;
     private final UserDetailServiceImpl userDetailService;
+    private final RoleServiceImpl roleService;
 
     @Autowired
-    public RESTController(UserService userService, UserDetailServiceImpl userDetailService) {
+    public RESTController(UserService userService, UserDetailServiceImpl userDetailService, RoleServiceImpl roleService) {
         this.userService = userService;
-
         this.userDetailService = userDetailService;
+        this.roleService = roleService;
     }
 
-    @GetMapping("/users")
+    @GetMapping("/admin")
     public ResponseEntity<List<User>> showAllUser() {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/roles")
+    public ResponseEntity<List<Role>> getAllRoles() {
+        return new ResponseEntity<>(roleService.getAllRoles(), HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         System.out.println(userService.getUserById(id));
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
 
     }
+
     @GetMapping("/user")
     public ResponseEntity<User> userPage(Principal principal) {
-        return new ResponseEntity<>(userDetailService.findByUsername(principal.getName()),HttpStatus.OK);
+        return new ResponseEntity<>(userDetailService.findByUsername(principal.getName()), HttpStatus.OK);
     }
-//    @GetMapping("/user")
-//    public ResponseEntity<User> getThisUser(Principal principal) {
-//        return new ResponseEntity<>(userService.findByUsername(principal.getName()).get(), HttpStatus.OK);
 
-    @PostMapping("/users")
+    @PostMapping("/admin")
     public User addNewUser(@RequestBody User user) {
         userService.addUser(user);
         return user;
     }
 
-    @PutMapping("/users")
+    @PutMapping("/admin")
     public User updateUser(@RequestBody User user) {
         userService.addUser(user);
         return user;
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/admin/{id}")
     public void deleteUser(@PathVariable Long id) {
         userService.delUser(id);
     }
