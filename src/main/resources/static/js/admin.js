@@ -33,6 +33,7 @@ function createTable(data) {
         temp += "<td>" + u.name + "</td>";
         temp += "<td>" + u.username + "</td>";
         temp += "<td>" + u.roles.map(role => role.role.replaceAll("ROLE_", "")).join(', ') + "</td>";
+        // temp += "<td>" + u.roles.map(role => role.role).join(', ') + "</td>";
         temp += "<td><button class=\"btn btn-info\" onclick=\"fEdit(this)\" id=\"editBtn" + u.id + "\">Edit</button></td>";
         temp += "<td><button class=\"btn btn-danger\" onclick=\"fDel(this)\" id=\"deleteBtn" + u.id + "\">Delete</button></td>" + "</tr>";
     })
@@ -64,106 +65,212 @@ fetch('/api/user').then(
     }
 )
 
+// ------------------------Добавление нового User'а------------------------------------
+fetch('/api/roles').then(
+    res => {
+        res.json().then(
+            roles => {
+                let temp = "";
+                console.log(roles)
+                // document.getElementById("new-roles").size = roles.length;
+                roles.forEach(r => {
+                    temp += "<option>" + r.role + "</option>";
+                })
+                document.getElementById("new-roles").innerHTML = temp;
+            }
+        )
+    }
+);
+
+$('#addUserBtn').click(function () {
+    let newUser = {
+        name: "",
+        username: "",
+        password: "",
+        roles: []
+    };
+    newUser.name = document.getElementById("new-name").value;
+    newUser.username = document.getElementById("new-email").value;
+    newUser.password = document.getElementById("new-password").value;
+    // newUser.roles = getRoles(Array.from(document.getElementById("new-roles").selectedOptions).map(role => role.value));
+    newUser.roles = [];
+    [].slice.call(document.getElementById("new-roles")).forEach(op => {
+        if (op.selected) {
+            allRoles.forEach(r => {
+                if (r.role == op.text) {
+                    newUser.roles.push(r);
+                }
+            })
+        }
+    })
+    fetch('/api/admin', {
+        method: 'POST',
+        body: JSON.stringify(newUser),
+        headers: {'Content-Type': 'application/json'}
+    }).then(res1 => {
+        if (res1.ok) {
+            res1.json().then(u => {
+                allUsers.push(u);
+                createTable(allUsers);
+            })
+            document.getElementById("new-name").value = "";
+            document.getElementById("new-email").value = "";
+            document.getElementById("new-password").value = "";
+            document.getElementById("new-roles").selectedIndex = -1;
+        } else {
+            alert("Не удалось добавить: " + res1.status);
+        }
+    })
+
+})
+
+function getRoles(rols) {
+    let roles = [];
+    if (rols.indexOf("ADMIN") >= 0) {
+        roles.push({
+            "id": 1,
+            "name": "ROLE_ADMIN",
+            "users": null,
+            "authority": "ROLE_ADMIN"
+        });
+    }
+    if (rols.indexOf("USER") >= 0) {
+        roles.push({
+            "id": 2,
+            "name": "ROLE_USER",
+            "users": null,
+            "authority": "ROLE_USER"
+        });
+    }
+    return roles;
+}
 
 
+function getUserById(id) {
+    let t = null;
+    allUsers.forEach(u => {
+        if (u.id == id) {
+            t = u;
+        }
+    })
+    return t;
+}
 
-//
-// const url = 'http://localhost:8080/api/admin';
-// const renderTable = document.getElementById("all-user-table-body");
-//
-// const renderPosts = (users) => {
-//     let temp = '';
-//     users.forEach((u) => {
-//         temp += `<tr>
-//                                 <td>${u.id}</td>
-//                                 <td id=${'name' + u.id}>${u.name}</td>
-//                                 <td id=${'username' + u.id}>${u.username}</td>
-//                                 <td id=${'role' + u.id}>${u.roles.map(role => role.role).join(' ')}</td>
-//                                 <td>
-//                                 <button class="btn btn-info" type="button"
-//                                 data-bs-toggle="modal" data-bs-target="#modalEdit"
-//                                 onclick="editModal(${u.id})">Edit</button></td>
-//                                 <td>
-//                                 <button class="btn btn-danger" type="button"
-//                                 data-bs-toggle="modal" data-bs-target="#modalDelete"
-//                                 onclick="deleteModal(${u.id})">Delete</button></td>
-//                                 </tr>
-//                                  `
-//
-//     })
-//     renderTable.innerHTML = temp;
-// }
-//
-// function getAllUsers() {
-//     fetch(url)
-//         .then(res => res.json())
-//         .then(data => {
-//             renderPosts(data)
-//         })
-// }
-//
-// getAllUsers();
-//
-// // -------------------Delete-------------------
-// function deleteModal(id) {
-//     fetch(url + '/' + id, {
-//         headers: {
-//             'Accept': 'application/json',
-//             'Content-Type': 'application/json;charset=UTF-8'
-//         }
-//     }).then(res => {
-//         res.json().then(us => {
-//             document.getElementById('idDeleteUser').value = us.id;
-//             document.getElementById('deleteUserName').value = us.name;
-//             document.getElementById('deleteUserEmail').value = us.username;
-//         })
-//     });
-// }
-//
-// async function deleteUser() {
-//     console.log(document.getElementById('idDeleteUser').value)
-//     await fetch(url + '/' + document.getElementById('idDeleteUser').value, {
-//         method: 'DELETE',
-//         headers: {
-//             'Accept': 'application/json',
-//             'Content-Type': 'application/json;charset=UTF-8'
-//         },
-//         body: JSON.stringify(document.getElementById('idDeleteUser').value)
-//     })
-//
-//     getAllUsers()
-//     document.getElementById("deleteFormCloseButton").click();
-// }
-//
+// -------------------Удаление юзера----------------------------
+$('#delUserBtn').click(function () {
+    let id = document.getElementById("idDelModal").value;
+    $('#deleteModal').modal('hide');
+
+    fetch('/api/admin/' + id, {method: 'DELETE'})
+        .then(res => {
+            if (res.ok) {
+                document.getElementById(id).remove();
+                let u = getUserById(id);
+                let i = allUsers.indexOf(u);
+                delete allUsers[i];
+            }
+        });
+})
+
+function fDel(el) {
+    let idStr = el.id;
+    let id = idStr.slice(9);
+    allUsers.forEach(u => {
+        if (u.id == id) {
+            document.getElementById("idDelModal").value = u.id;
+            document.getElementById("nameDelModal").value = u.name;
+            document.getElementById("emailDelModal").value = u.username;
+            document.getElementById("passwordDelModal").value = u.password;
+            document.getElementById("rolesDelModal").size = u.roles.length.toString();
+            let temp = "";
+            u.roles.forEach(r => {
+                temp += "<option>" + r.role.replaceAll("ROLE_", "") + "</option>";
+            })
+            document.getElementById("rolesDelModal").innerHTML = temp;
+        }
+    });
+    $('#deleteModal').modal('show');
+}
+
+// ---------Редактирование юзера----------------------
+$('#editUserBtn').click(function () {
+    let id = document.getElementById("idEditModal").value;
+    let edit = {
+        id: -1,
+        name: "",
+        username: "",
+        password: "",
+        roles: []
+    };
+    $('#editModal').modal('hide');
+    edit.id = document.getElementById("idEditModal").value;
+    edit.name = document.getElementById("nameEditModal").value;
+    edit.username= document.getElementById("emailEditModal").value;
+    edit.password = document.getElementById("passwordEditModal").value;
+    // edit.roles = getRoles(Array.from(document.getElementById("rolesEditModal").selectedOptions).map(role => role.value));
+    edit.roles = [];
+    [].slice.call(document.getElementById("rolesEditModal")).forEach(op => {
+        if (op.selected) {
+            allRoles.forEach(r => {
+                if (r.role == op.text) {
+                    edit.roles.push(r);
+                }
+            })
+        }
+    })
 
 
-// const urlAuth = 'http://localhost:8080/api/user';
-// const userTableBody = document.getElementById('user-table-info');
-// const userHeader = document.getElementById('admin-panel');
-//
-//
-// // заполнение таблицы User
-// async function getUser() {
-//
-//     fetch(urlAuth)
-//         .then((rez) => rez.json())
-//         .then((uns) => {
-//             let temp = '';
-//             temp += `<tr>
-//                 <td>${uns.id}</td>
-//                 <td>${uns.name}</td>
-//                 <td>${uns.username}</td>
-//                 <td>${uns.roles.map(role => role.role).join(' ')}</td>
-//             </tr>`;
-// //--------------Заполнение таблицы страницы User-------------------
-//             userTableBody.innerHTML = temp;
-// //--------------Заполнение заголовка страницы----------------------
-//             userHeader.innerHTML = `<h5> ${uns.username} with roles: ${uns.roles.map(role => role.role).join(' ')} </h5>`;
-//
-//         })
-// }
-//
-// getUser();
+    console.log(edit)
+    fetch('/api/admin', {
+        method: 'PUT',
+        body: JSON.stringify(edit),
+        headers: {'Content-Type': 'application/json'}
+    })
+        .then(res => {
+            if (res.ok) {
+                allUsers.forEach(u => {
+                    if (u.id == edit.id) {
+                        u.name = edit.name;
+                        u.username = edit.username;
+                        if (edit.password !== "") {
+                            u.password = edit.password;
+                        }
+                        u.roles = edit.roles;
+                    }
+                })
+                createTable(allUsers);
+            }
+        });
+
+})
+
+function fEdit(el) {
+    let idStr = el.id;
+    let id = idStr.slice(7);
+    allUsers.forEach(u => {
+        if (u.id == id) {
+            console.log(u);
+            document.getElementById("idEditModal").value = u.id;
+            document.getElementById("nameEditModal").value = u.name;
+            document.getElementById("emailEditModal").value = u.username;
+            document.getElementById("passwordEditModal").value = u.password;
+            document.getElementById("rolesEditModal").size = allRoles.length;
+            let temp = "";
+            allRoles.forEach(r => {
+                let select = "";
+                u.roles.forEach(rUser => {
+                    if (rUser.id == r.id) {
+                        select = " selected";
+                    }
+                })
+                temp += "<option" + select + ">" + r.role + "</option>";
+            })
+            document.getElementById("rolesEditModal").innerHTML = temp;
+        }
+    });
+    $('#editModal').modal('show');
+}
+
 
 
 
